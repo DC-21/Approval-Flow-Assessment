@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+ENV DATABASE_URL="postgresql://postgres:postgres@db:5432/approval_workflow"
 RUN npm run db:generate
 RUN npm run build
 
