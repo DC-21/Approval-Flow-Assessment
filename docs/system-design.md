@@ -201,5 +201,5 @@ All errors are structured JSON: `{ "error": "<message>" }`.
 | User registration | Seeded users are sufficient; registration adds auth surface area with no assessment value |
 | Refresh tokens | 7-day JWT is acceptable for a prototype; production would add refresh + revocation |
 | File attachments | Skipped to keep scope tight; would use S3 presigned URLs + `attachmentUrl` field |
-| Pagination | All records are returned; Prisma's `take`/`cursor` would be the upgrade path |
+| Pagination | Implemented as simple `page`/`limit` offset pagination; cursor pagination would be the production upgrade for large queues |
 | Email notifications | Stretch goal — skipped to protect test coverage and core quality |

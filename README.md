@@ -169,7 +169,7 @@ cd backend && npm test
 
 **HTTP-only JWT cookie with 7-day expiry.** No refresh tokens — acceptable for an assessment. Production would add refresh + revocation.
 
-**No pagination.** The applicant list and reviewer queue load all records. With more time: cursor-based pagination with `take`/`cursor` in Prisma.
+**Offset pagination.** The applicant list and reviewer queue use `page`/`limit` backed by Prisma `skip`/`take`. With more time: cursor-based pagination for better performance on large datasets.
 
 **No file attachments.** Skipped to keep scope tight. Would add S3 presigned URLs + a `attachmentUrl` field on `Application`.
 
@@ -179,5 +179,6 @@ cd backend && npm test
 
 ## AI Tools Used
 
-- **Claude Code (claude-sonnet-4-6)** — used throughout to scaffold the project structure, generate boilerplate (Dockerfiles, Tailwind setup, Vite config), and draft the full codebase. All logic was reviewed and understood before committing: the state machine rules, the Prisma transaction pattern, the JWT middleware chain, and the React routing/auth context.
-- Every AI-generated piece was verified by reading the output, running the tests, and manually tracing the auth + transition flows.
+- **Claude Code (claude-sonnet-4-6)** — used for coding support, scaffolding project structure, generating boilerplate, and drafting parts of the documentation.
+- **Codex** — used to audit the codebase against the assessment brief, produce a standards report, identify gaps, and help prepare the required API authorization test cases.
+- Manual work was still involved throughout: reviewing generated code, adjusting implementation details, writing and refining tests, tracing the auth and transition flows, running builds/tests, and verifying the final behavior before submission.
