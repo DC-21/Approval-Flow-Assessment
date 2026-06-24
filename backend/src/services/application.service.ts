@@ -47,11 +47,16 @@ export async function listApplications(
 
   if (actorRole === Role.APPLICANT) {
     where.applicantId = actorId;
+  } else {
+    where.status = { not: ApplicationStatus.DRAFT };
   }
 
   if (statusFilter) {
     const upper = statusFilter.toUpperCase();
-    if (Object.values(ApplicationStatus).includes(upper as ApplicationStatus)) {
+    if (
+      Object.values(ApplicationStatus).includes(upper as ApplicationStatus) &&
+      !(actorRole === Role.REVIEWER && upper === ApplicationStatus.DRAFT)
+    ) {
       where.status = upper as ApplicationStatus;
     }
   }

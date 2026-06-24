@@ -5,6 +5,8 @@ import { ApplicationStatus, Role } from "../generated/prisma/client";
 
 const dbMock = vi.hoisted(() => ({
   application: {
+    count: vi.fn(),
+    findMany: vi.fn(),
     findUnique: vi.fn(),
     update: vi.fn(),
   },
@@ -44,5 +46,28 @@ describe("application API authorization", () => {
     expect(response.status).toBe(403);
     expect(response.body.error).toContain("cannot perform action 'approve'");
     expect(dbMock.$transaction).not.toHaveBeenCalled();
+  });
+
+  it("excludes draft applications from the reviewer queue", async () => {
+    dbMock.$transaction.mockResolvedValue([[], 0]);
+
+    const token = jwt.sign(
+      { userId: "reviewer-1", email: "reviewer@test.com", role: Role.REVIEWER },
+      process.env.JWT_SECRET!,
+    );
+
+    const response = await request(app)
+      .get("/api/applications")
+      .set("Cookie", [`token=${token}`]);
+
+    expect(response.status).toBe(200);
+    expect(dbMock.application.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { status: { not: ApplicationStatus.DRAFT } },
+      }),
+    );
+    expect(dbMock.application.count).toHaveBeenCalledWith({
+      where: { status: { not: ApplicationStatus.DRAFT } },
+    });
   });
 });
