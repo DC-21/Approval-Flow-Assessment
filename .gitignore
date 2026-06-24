@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-seed/
+.env
+*.local
+.DS_Store
+docker-compose.override.yml
+backend/src/generated/prisma/
+backend/dist/
+frontend/dist/
